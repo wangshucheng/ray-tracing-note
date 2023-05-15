@@ -62,6 +62,6 @@ inline double clamp(double x, double min, double max)
 
 // Common Headers
 
-// #include "ray.h"
+#include "ray.h"
 
 #endif
