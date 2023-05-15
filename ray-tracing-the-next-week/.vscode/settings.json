@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "limits": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "xlocinfo": "cpp",
+        "bit": "cpp",
+        "xlocale": "cpp",
+        "memory": "cpp",
+        "algorithm": "cpp"
     }
 }

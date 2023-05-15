@@ -5,6 +5,7 @@
 #include "moving_sphere.h"
 #include "camera.h"
 #include "material.h"
+#include "bvh.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -100,9 +101,13 @@ int main()
 
     // std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
+    double time0 = 0.0;
+    double time1 = 1.0;
+
     // World
 
     auto world = random_scene();
+    auto world_bvh_node = bvh_node(world, time0, time1);
 
     // Camera
 
@@ -112,7 +117,7 @@ int main()
     auto dist_to_focus = 10.0;
     auto aperture = 0.1;
 
-    camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+    camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, time0, time1);
 
     unsigned char *data = new unsigned char[image_width * image_height * 3];
 
@@ -127,7 +132,7 @@ int main()
                 auto u = (i + random_double()) / image_width;
                 auto v = (j + random_double()) / image_height;
                 ray r = cam.get_ray(u, v);
-                color += ray_color(r, world, max_depth);
+                color += ray_color(r, world_bvh_node, max_depth);
             }
             // color.write_color(std::cout, samples_per_pixel);
 
