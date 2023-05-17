@@ -175,7 +175,7 @@ int main()
         }
     }
 
-    stbi_write_jpg("..//output.jpg", image_width, image_height, 3, data, 100);
+    stbi_write_jpg("..//output/output.jpg", image_width, image_height, 3, data, 100);
     delete[] data;
 
     std::cerr << "\nDone.\n";

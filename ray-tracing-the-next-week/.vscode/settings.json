@@ -8,6 +8,7 @@
         "bit": "cpp",
         "xlocale": "cpp",
         "memory": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "iostream": "cpp"
     }
 }
