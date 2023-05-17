@@ -103,6 +103,17 @@ hittable_list two_spheres()
     return objects;
 }
 
+hittable_list two_perlin_spheres()
+{
+    hittable_list objects;
+
+    auto pertext = make_shared<noise_texture>();
+    objects.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(pertext)));
+    objects.add(make_shared<sphere>(point3(0, 2, 0), 2, make_shared<lambertian>(pertext)));
+
+    return objects;
+}
+
 int main()
 {
     const auto aspect_ratio = 16.0 / 9.0;
@@ -131,9 +142,16 @@ int main()
         aperture = 0.1;
         break;
 
-    default:
     case 2:
         world = two_spheres();
+        lookfrom = point3(13, 2, 3);
+        lookat = point3(0, 0, 0);
+        vfov = 20.0;
+        break;
+
+    default:
+    case 3:
+        world = two_perlin_spheres();
         lookfrom = point3(13, 2, 3);
         lookat = point3(0, 0, 0);
         vfov = 20.0;
@@ -175,7 +193,7 @@ int main()
         }
     }
 
-    stbi_write_jpg("..//output.jpg", image_width, image_height, 3, data, 100);
+    stbi_write_jpg("..//output/output.jpg", image_width, image_height, 3, data, 100);
     delete[] data;
 
     std::cerr << "\nDone.\n";

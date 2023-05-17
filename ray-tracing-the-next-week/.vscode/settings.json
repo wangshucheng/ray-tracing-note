@@ -9,6 +9,7 @@
         "xlocale": "cpp",
         "memory": "cpp",
         "algorithm": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "cstdlib": "cpp"
     }
 }
