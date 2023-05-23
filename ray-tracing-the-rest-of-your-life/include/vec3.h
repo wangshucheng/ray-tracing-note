@@ -74,11 +74,31 @@ public:
 
     vec3 write_color(int samples_per_pixel)
     {
+        auto r = e[0];
+        auto g = e[1];
+        auto b = e[2];
+
+        // Replace NaN components with zero. See explanation in Ray Tracing: The Rest of Your Life.
+        if (r != r)
+            r = 0.0;
+        if (g != g)
+            g = 0.0;
+        if (b != b)
+            b = 0.0;
+
+        // Divide the color by the number of samples and gamma-correct for gamma=2.0.
         auto scale = 1.0 / samples_per_pixel;
-        auto r = sqrt(scale * e[0]);
-        auto g = sqrt(scale * e[1]);
-        auto b = sqrt(scale * e[2]);
+        r = sqrt(scale * r);
+        g = sqrt(scale * g);
+        b = sqrt(scale * b);
         return vec3(r, g, b);
+    }
+
+    bool near_zero() const
+    {
+        // Return true if the vector is close to zero in all dimensions.
+        const auto s = 1e-8;
+        return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
     }
 
     inline static vec3 random()
@@ -199,6 +219,19 @@ vec3 random_in_unit_disk()
             continue;
         return p;
     }
+}
+
+inline vec3 random_cosine_direction()
+{
+    auto r1 = random_double();
+    auto r2 = random_double();
+    auto z = sqrt(1 - r2);
+
+    auto phi = 2 * pi * r1;
+    auto x = cos(phi) * sqrt(r2);
+    auto y = sin(phi) * sqrt(r2);
+
+    return vec3(x, y, z);
 }
 
 // Type aliases for vec3
