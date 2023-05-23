@@ -160,7 +160,7 @@ public:
     {
         srec.specular_ray = ray(rec.p, random_in_unit_sphere(), r_in.time());
         srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
-        srec.is_specular = false;
+        srec.is_specular = true;
         srec.pdf_ptr = nullptr;
         return true;
     }
