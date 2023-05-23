@@ -20,9 +20,12 @@ const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
 // Utility Functions
-
+#include <mutex>
+std::mutex mutex_ins;
 inline void UpdateProgress(float progress)
 {
+    // lock
+    std::lock_guard<std::mutex> g1(mutex_ins);
     int barWidth = 70;
 
     std::cout << "[";

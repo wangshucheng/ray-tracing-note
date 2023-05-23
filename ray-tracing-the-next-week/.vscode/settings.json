@@ -44,6 +44,12 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "mutex": "cpp",
+        "ratio": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
     }
 }

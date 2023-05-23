@@ -1,5 +1,4 @@
 #include "rtweekend.h"
-
 #include "hittable_list.h"
 #include "sphere.h"
 #include "moving_sphere.h"
@@ -13,6 +12,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include <thread>
+#include <mutex>
+std::mutex g_mutex;
 color ray_color(const ray &r, const color &background, const hittable &world, int depth)
 {
     hit_record rec;
@@ -371,31 +373,61 @@ int main()
     unsigned char *data = new unsigned char[image_width * image_height * 3];
     int process = 0;
 
-    for (int j = image_height - 1; j >= 0; --j)
+    auto unit = [&](uint32_t rowStart, uint32_t rowEnd, uint32_t colStart, uint32_t colEnd)
     {
-        // std::cout << "\rScanlines remaining: " << j << ' ' << std::flush;
-        for (int i = 0; i < image_width; ++i)
+        for (int j = colStart; j < colEnd; ++j)
         {
-            vec3 color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
+            // std::cout << "\rScanlines remaining: " << j << ' ' << std::flush;
+            for (int i = rowStart; i < rowEnd; ++i)
             {
-                auto u = (i + random_double()) / image_width;
-                auto v = (j + random_double()) / image_height;
-                ray r = cam.get_ray(u, v);
-                color += ray_color(r, background, world_bvh_node, max_depth);
+                int m = (image_height - j - 1) * image_width * 3 + i * 3;
+
+                vec3 color(0, 0, 0);
+                for (int s = 0; s < samples_per_pixel; ++s)
+                {
+                    auto u = (i + random_double()) / image_width;
+                    auto v = (j + random_double()) / image_height;
+                    ray r = cam.get_ray(u, v);
+                    color += ray_color(r, background, world_bvh_node, max_depth);
+                }
+                // color.write_color(std::cout, samples_per_pixel);
+
+                vec3 col = color.write_color(samples_per_pixel);
+
+                // Lock the mutex before accessing and modifying the shared variables
+                g_mutex.lock();
+                data[m] = (unsigned char)(255.99f * col[0]);
+                data[m + 1] = (unsigned char)(255.99f * col[1]);
+                data[m + 2] = (unsigned char)(255.99f * col[2]);
+                process++;
+                g_mutex.unlock();
             }
-            // color.write_color(std::cout, samples_per_pixel);
 
-            vec3 col = color.write_color(samples_per_pixel);
-            data[(image_height - j - 1) * image_width * 3 + i * 3] = (unsigned char)(255.99f * col[0]);
-            data[(image_height - j - 1) * image_width * 3 + i * 3 + 1] = (unsigned char)(255.99f * col[1]);
-            data[(image_height - j - 1) * image_width * 3 + i * 3 + 2] = (unsigned char)(255.99f * col[2]);
-
-            process++;
+            UpdateProgress(1.0 * process / image_height / image_width);
         }
+    };
 
-        UpdateProgress(1.0 * process / image_height / image_width);
+    int id = 0;
+    constexpr int bx = 4;
+    constexpr int by = 4;
+    std::thread th[bx * by];
+
+    int strideX = image_width / bx;
+    int strideY = image_height / by;
+
+    // block
+    for (int i = 0; i < image_width; i += strideX)
+    {
+        for (int j = 0; j < image_height; j += strideY)
+        {
+            th[id] = std::thread(unit, i, i + strideX, j, j + strideY);
+            id++;
+        }
     }
+
+    for (int i = 0; i < bx * by; i++)
+        th[i].join();
+    UpdateProgress(1.f);
 
     stbi_write_jpg("..//output/output.jpg", image_width, image_height, 3, data, 100);
     delete[] data;
