@@ -6,6 +6,8 @@
 #include <limits>
 #include <memory>
 #include <cstdlib>
+#include <iostream>
+#include <iomanip>
 
 // Usings
 
@@ -18,6 +20,25 @@ const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
 // Utility Functions
+
+inline void UpdateProgress(float progress)
+{
+    int barWidth = 70;
+
+    std::cout << "[";
+    int pos = barWidth * progress;
+    for (int i = 0; i < barWidth; ++i)
+    {
+        if (i < pos)
+            std::cout << "=";
+        else if (i == pos)
+            std::cout << ">";
+        else
+            std::cout << " ";
+    }
+    std::cout << "] " << std::fixed << std::setprecision(2) << progress * 100.0 << " %\r";
+    std::cout.flush();
+};
 
 inline double degrees_to_radians(double degrees)
 {

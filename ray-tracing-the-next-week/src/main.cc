@@ -13,8 +13,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#include <iostream>
-
 color ray_color(const ray &r, const color &background, const hittable &world, int depth)
 {
     hit_record rec;
@@ -351,7 +349,7 @@ int main()
         aspect_ratio = 1.0;
         image_width = 800;
         image_height = 800;
-        samples_per_pixel = 1000;
+        samples_per_pixel = 10000;
         background = color(0, 0, 0);
         lookfrom = point3(478, 278, -600);
         lookat = point3(278, 278, 0);
@@ -371,10 +369,11 @@ int main()
     camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, time0, time1);
 
     unsigned char *data = new unsigned char[image_width * image_height * 3];
+    int process = 0;
 
     for (int j = image_height - 1; j >= 0; --j)
     {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+        // std::cout << "\rScanlines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i)
         {
             vec3 color(0, 0, 0);
@@ -391,11 +390,15 @@ int main()
             data[(image_height - j - 1) * image_width * 3 + i * 3] = (unsigned char)(255.99f * col[0]);
             data[(image_height - j - 1) * image_width * 3 + i * 3 + 1] = (unsigned char)(255.99f * col[1]);
             data[(image_height - j - 1) * image_width * 3 + i * 3 + 2] = (unsigned char)(255.99f * col[2]);
+
+            process++;
         }
+
+        UpdateProgress(1.0 * process / image_height / image_width);
     }
 
     stbi_write_jpg("..//output/output.jpg", image_width, image_height, 3, data, 100);
     delete[] data;
 
-    std::cerr << "\nDone.\n";
+    std::cout << "\nDone.\n";
 }
