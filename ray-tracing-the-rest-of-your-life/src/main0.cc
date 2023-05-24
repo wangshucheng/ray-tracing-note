@@ -284,23 +284,23 @@ int main()
     // Image
 
     const auto aspect_ratio = 1.0 / 1.0;
-    const int image_width = 600;
+    const int image_width = 800;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 1000;
-    const int max_depth = 50;
+    const int max_depth = 5;
 
     // World
 
-    auto world = cornell_box();
+    auto world = final_scene();
     shared_ptr<hittable> lights =
-        make_shared<xz_rect>(213, 343, 227, 332, 554, shared_ptr<material>());
+        make_shared<xz_rect>(123, 423, 147, 412, 554, shared_ptr<material>());
     // make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>());
 
     color background(0, 0, 0);
 
     // Camera
 
-    point3 lookfrom(278, 278, -800);
+    point3 lookfrom(478, 278, -600);
     point3 lookat(278, 278, 0);
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
