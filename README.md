@@ -1,10 +1,9 @@
 # ray-tracing-note
 ![output](https://github.com/wangshucheng/ray-tracing-note/blob/master/output.jpg)
 ![output](https://github.com/wangshucheng/ray-tracing-note/blob/master/ray-tracing-the-next-week/output/output.jpg)
-
-
+![output](https://github.com/wangshucheng/ray-tracing-note/blob/master/ray-tracing-the-rest-of-your-life/output/output.jpg)
 # todo
-- cudaåŠ é€Ÿ
+- cuda¼ÓËÙ
 - https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html
 - https://developer.nvidia.com/blog/accelerated-ray-tracing-cuda/
 - https://blog.csdn.net/freesouths/category_8960274.html
